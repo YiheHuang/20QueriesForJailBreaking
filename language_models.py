@@ -4,6 +4,8 @@ from config import TOGETHER_MODEL_NAMES, LITELLM_TEMPLATES, API_KEY_NAMES, Model
 from loggers import logger
 from common import get_api_key
 
+litellm.drop_params = True
+
 class LanguageModel():
     def __init__(self, model_name):
         self.model_name = Model(model_name)
@@ -24,6 +26,7 @@ class APILiteLLM(LanguageModel):
     def __init__(self, model_name):
         super().__init__(model_name)
         self.api_key = get_api_key(self.model_name)
+        litellm.api_base = "https://api.yunwu.ai/v1"
         self.litellm_model_name = self.get_litellm_model_name(self.model_name)
         litellm.drop_params=True
         self.set_eos_tokens(self.model_name)
@@ -77,6 +80,7 @@ class APILiteLLM(LanguageModel):
             model=self.litellm_model_name, 
             messages=convs_list,
             api_key=self.api_key,
+            api_base="https://api.yunwu.ai/v1",
             temperature=temperature,
             top_p=top_p,
             max_tokens=max_n_tokens,
